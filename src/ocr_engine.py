@@ -1,27 +1,33 @@
 import easyocr
 import os
 
-# 1. Инициализация (Скачиваем веса нейросети для русского и английского)
-# На собесе скажешь: "I used a pre-trained model with support for Cyrillic and Latin scripts."
+
+# Model initialization is done globally to save resources.
+
 reader = easyocr.Reader(['ru', 'en'])
 
 
-def run_ocr():
-    DATA_PATH = "data/raw_samples"
-    files = [f for f in os.listdir(DATA_PATH) if f.lower().endswith(('.jpg', '.png', '.jpeg'))]
+def extract_text(img_path):
 
-    for file_name in files:
-        print(f"\n🔎 Reading text from: {file_name}...")
-        img_path = os.path.join(DATA_PATH, file_name)
+    # Function to extract text from a single image.
+    if not os.path.exists(img_path):
+        print(f"❌ Error: File not found at {img_path}")
+        return ""
 
-        # 2. Сам процесс распознавания
-        # detail=0 вернет только текст. Если поставить 1, он даст координаты рамок.
+    try:
+        # detail=0 returns only a list of text lines
         result = reader.readtext(img_path, detail=0)
 
-        # 3. Собираем список строк в один абзац (Raw String)
+        # Combine the list of rows into one large row
         full_text = " ".join(result)
-        print(f"📝 Extracted Text:\n{full_text}")
+        return full_text
+
+    except Exception as e:
+        print(f"❌ OCR Error: {e}")
+        return ""
 
 
 if __name__ == "__main__":
-    run_ocr()
+    test_img = "data/raw_samples/milk_blurry.jpg"
+    text = extract_text(test_img)
+    print(f"--- TEST OCR OUTPUT ---\n{text}")
