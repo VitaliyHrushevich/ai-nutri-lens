@@ -1,33 +1,23 @@
 import easyocr
 import os
 
-
-# Model initialization is done globally to save resources.
-
+# Инициализируем модель глобально (один раз при запуске программы)
 reader = easyocr.Reader(['ru', 'en'])
 
-
 def extract_text(img_path):
-
-    # Function to extract text from a single image.
+    """Извлекает сырой текст из изображения."""
     if not os.path.exists(img_path):
-        print(f"❌ Error: File not found at {img_path}")
         return ""
-
     try:
-        # detail=0 returns only a list of text lines
+        # rotation_info=True поможет, если текст на банке вертикальный
         result = reader.readtext(img_path, detail=0)
-
-        # Combine the list of rows into one large row
-        full_text = " ".join(result)
-        return full_text
-
+        return " ".join(result)
     except Exception as e:
-        print(f"❌ OCR Error: {e}")
-        return ""
-
+        return f"Error during OCR: {e}"
 
 if __name__ == "__main__":
+    # Тестовый запуск: проверяем только распознавание
     test_img = "data/raw_samples/milk_blurry.jpg"
-    text = extract_text(test_img)
-    print(f"--- TEST OCR OUTPUT ---\n{text}")
+    print("Testing OCR...")
+    print(extract_text(test_img)[:200], "...") # Печатаем первые 200 символов
+
