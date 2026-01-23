@@ -1,6 +1,7 @@
 import os
 from src.ocr_engine import extract_text
 from src.text_processor import clean_and_split
+from src.ai_analyzer import analyze_ingredients
 
 
 def run_nutri_lens():
@@ -20,15 +21,20 @@ def run_nutri_lens():
         return
 
     # 3. Block: Text Processor (Cleaning)
-    # Здесь мы превращаем кашу в список токенов
     ingredients = clean_and_split(raw_text)
 
-    # 4. Result Presentation
+    if not ingredients:
+        print("❌ Error: No ingredients found after cleaning.")
+        return
+
+    # 4. НОВЫЙ БЛОК: AI Analysis (Ollama)
+    # Передаем очищенный список в ИИ
+    ai_report = analyze_ingredients(ingredients)
+
+    # 5. Result Presentation
     print("\n" + "=" * 30)
-    print(f"✅ PIPELINE COMPLETE")
-    print(f"Found {len(ingredients)} ingredient blocks:")
-    for idx, item in enumerate(ingredients):
-        print(f"{idx + 1}. {item[:150]}...")  # Показываем начало каждого блока
+    print("📋 ФИНАЛЬНЫЙ ОТЧЕТ ИИ:")
+    print(ai_report)
     print("=" * 30)
 
 

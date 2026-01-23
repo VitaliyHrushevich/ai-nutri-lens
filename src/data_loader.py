@@ -1,8 +1,9 @@
 import os
 from PIL import Image
 
+
 def get_image_metadata(img_path):
-    """Возвращает метаданные изображения для анализа качества."""
+    # Returns image metadata for quality analysis.
     if not os.path.exists(img_path):
         return None
     try:
@@ -15,8 +16,9 @@ def get_image_metadata(img_path):
     except Exception:
         return None
 
+
 if __name__ == "__main__":
-    # Тестовый запуск: проверяем, видит ли скрипт фото
+    # Test run: check if the script sees the photo
     test_path = "data/raw_samples/milk_blurry.jpg"
     meta = get_image_metadata(test_path)
     print(f"Test Metadata for {test_path}: {meta}")

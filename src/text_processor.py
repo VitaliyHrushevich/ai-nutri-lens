@@ -2,7 +2,7 @@ import re
 
 
 def filter_ingredients(tokens):
-    """Очищает токены от технического мусора."""
+    # Cleans toks from technical waste
     stop_words = ['тел', 'адрес', 'республика', 'email', 'год', 'гост', 'ту рб', 'онын', 'курамы', 'изготовитель']
     clean_ingredients = []
 
@@ -11,7 +11,7 @@ def filter_ingredients(tokens):
         if len(token) < 3:
             continue
 
-        # Если в токене есть стоп-слово — игнорируем его
+        # If there is a stop-word in the token - ignore it
         is_trash = any(word in token for word in stop_words)
         if not is_trash:
             clean_ingredients.append(token)
@@ -20,10 +20,10 @@ def filter_ingredients(tokens):
 
 
 def clean_and_split(raw_text):
-    """Основной пайплайн очистки текста."""
+    # The basic Web plugin is a text cleaner.
     text = raw_text.lower()
 
-    # Ищем точку входа (начало состава)
+    # Find entry point (start of composition)
     start_keywords = ['состав:', 'курамы:', 'ингредиенты:', 'сосiаb', 'соспав']
     start_index = -1
     for key in start_keywords:
@@ -31,19 +31,19 @@ def clean_and_split(raw_text):
             start_index = text.find(key) + len(key)
             break
 
-    # Берем текст после ключевого слова (или весь, если не нашли)
+    # Take the text after the keyword (or all if not found)
     content = text[start_index:] if start_index != -1 else text
 
-    # Регулярка: оставляем буквы, цифры и запятые
+    # Regular: leave letters, numbers and commas
     cleaned = re.sub(r'[^а-яa-z0-9,\s]', '', content)
 
-    # Токенизация по запятым
+    # Comma Tagging
     raw_tokens = [t.strip() for t in cleaned.split(',')]
 
     return filter_ingredients(raw_tokens)
 
 
 if __name__ == "__main__":
-    # Тестовый запуск: проверяем логику очистки
+    # Test run: check the cleaning logic
     sample = "СОСТАВ: Молоко, сахар, E500. Изготовитель: ООО 'Молоко', тел: 123"
     print("Testing Processor:", clean_and_split(sample))
