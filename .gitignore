@@ -210,3 +210,5 @@ __marimo__/
 .idea/
 .DS_Store
 data/.DS_Store
+
+data/processed/
