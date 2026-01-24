@@ -27,8 +27,7 @@ def run_nutri_lens():
         print("❌ Error: No ingredients found after cleaning.")
         return
 
-    # 4. НОВЫЙ БЛОК: AI Analysis (Ollama)
-    # Передаем очищенный список в ИИ
+    # 4. AI Analysis (Ollama)
     ai_report = analyze_ingredients(ingredients)
 
     # 5. Result Presentation
