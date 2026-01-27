@@ -1,0 +1,25 @@
+# Data (DVC-managed externally)
+data/
+*.parquet
+experiments.db
+
+# Models (Ollama volumes)
+models/
+~/.ollama
+
+# Python cache
+__pycache__/
+.pytest_cache/
+
+# Git/DVC
+.git/
+.dvc/cache/
+.dvc/tmp/
+
+# Logs/temp
+tmp/
+*.log
+
+# IDE
+.vscode/
+.idea/

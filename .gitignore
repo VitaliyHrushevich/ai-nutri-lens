@@ -212,3 +212,7 @@ __marimo__/
 data/.DS_Store
 
 data/processed/
+__pycache__/
+.DS_Store
+data/raw_samples/
+*.log

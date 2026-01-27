@@ -1,29 +1,54 @@
-import ollama
+"""AI Analyzer for AI Nutri-Lens - Clean Architecture implementation."""
 
-def analyze_ingredients(ingredients_list):
-    print("🧠 AI is thinking (Context: Global & CIS Markets)...")
+from typing import List
+import requests
+from requests.exceptions import RequestException
 
-    ingredients_str = ", ".join(ingredients_list)
 
-    prompt = f"""
-    Ты — международный эксперт по питанию, специализирующийся на рынках Европы, США и СНГ. 
-    Тебе предоставлен список ингредиентов продукта, который может быть специфичным для Восточной Европы (например, сгущенное молоко, творожный сырок и т.д.).
+class NutriAnalyzer:
+    """Professional AI nutrition analyst using local LLM."""
 
-    ИНГРЕДИЕНТЫ: {ingredients_str}
+    def __init__(self, base_url: str = "http://localhost:11434", model: str = "llama3"):
+        self.base_url = base_url
+        self.model = model
 
-    ЗАДАЧИ:
-    1. Идентифицируй тип продукта, если это возможно по составу. 
-    2. Если это продукт с высоким содержанием сахара (как сгущенное молоко), объясни его специфику.
-    3. Оцени чистоту состава (есть ли там лишние растительные жиры вместо молочных).
-    4. Дай вердикт и оценку от 1 до 10.
+    def analyze_ingredients(self, ingredients: List[str]) -> str:
+        """Main analysis method - direct replacement."""
+        print("🧠 AI is thinking (Context: Global & CIS Markets)...")
 
-    Отвечай на русском языке.
-    """
+        ingredients_str = ", ".join(ingredients)
+        prompt = f"""
+        Ты — международный эксперт по питанию (Европа/США/СНГ). 
+        ИНГРЕДИЕНТЫ: {ingredients_str}
 
-    try:
-        response = ollama.chat(model='llama3', messages=[
-            {'role': 'user', 'content': prompt},
-        ])
-        return response['message']['content']
-    except Exception as e:
-        return f"❌ Ошибка при работе с Ollama: {e}"
+        1. Тип продукта
+        2. Сахар/специфика  
+        3. Чистота состава
+        4. Вердикт + оценка 1-10
+
+        Отвечай на русском.
+        """
+
+        try:
+            url = f"{self.base_url}/api/generate"
+            payload = {"model": self.model, "prompt": prompt, "stream": False}
+
+            resp = requests.post(url, json=payload, timeout=30)
+            resp.raise_for_status()
+            return resp.json()["response"].strip()
+
+        except RequestException as e:
+            return f"❌ Ollama недоступна: {e}"
+        except Exception as e:
+            return f"❌ Ошибка анализа: {e}"
+
+
+
+def create_nutri_analyzer(base_url: str = "http://localhost:11434"):
+    """Factory function"""
+    return NutriAnalyzer(base_url)
+
+
+def analyze_ingredients(ingredients: List[str]):
+    analyzer = create_nutri_analyzer()
+    return analyzer.analyze_ingredients(ingredients)

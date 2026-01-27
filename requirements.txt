@@ -1,6 +1,7 @@
 annotated-types==0.7.0
 anyio==4.12.1
 certifi==2026.1.4
+charset-normalizer==3.4.4
 easyocr==1.7.2
 filelock==3.20.3
 fsspec==2026.1.0
@@ -25,6 +26,7 @@ pydantic==2.12.5
 pydantic_core==2.41.5
 python-bidi==0.6.7
 PyYAML==6.0.3
+requests==2.32.5
 scikit-image==0.26.0
 scipy==1.17.0
 shapely==2.1.2
@@ -34,3 +36,4 @@ torch==2.10.0
 torchvision==0.25.0
 typing-inspection==0.4.2
 typing_extensions==4.15.0
+urllib3==2.6.3

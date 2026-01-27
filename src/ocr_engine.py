@@ -1,25 +1,32 @@
+"""OCR Engine for AI Nutri-Lens."""
+
+from typing import List
+from pathlib import Path
 import easyocr
-import os
-
-# Initialize the model globally (once at program launch)
-reader = easyocr.Reader(['ru', 'en'])
 
 
-def extract_text(img_path):
-    """Извлекает сырой текст из изображения."""
-    if not os.path.exists(img_path):
-        return ""
-    try:
-        # rotation_info=True helps if the text on the jar is vertical
-        result = reader.readtext(img_path, detail=0)
-        return " ".join(result)
-    except Exception as e:
-        return f"Error during OCR: {e}"
+class OCREngine:
+    def __init__(self, languages: List[str] = None):
+        self.languages = languages or ['ru', 'en']
+        self._reader = None
+
+    @property
+    def reader(self):
+        if self._reader is None:
+            self._reader = easyocr.Reader(self.languages, gpu=False)
+        return self._reader
+
+    def extract_text(self, image_path: Path) -> str:
+        if not image_path.exists():
+            return "File not found"
+        try:
+            result = self.reader.readtext(str(image_path), detail=0)
+            text = " ".join(result)
+            return text.strip() if text.strip() else "No text detected"
+        except Exception as e:
+            return f"OCR Error: {str(e)}"
 
 
-if __name__ == "__main__":
-    # Test run: check only recognition
-    test_img = "data/raw_samples/milk_blurry.jpg"
-    print("Testing OCR...")
-    print(extract_text(test_img)[:200], "...") # Print the first 200 characters
-
+def extract_text(img_path: str | Path) -> str:
+    engine = OCREngine()
+    return engine.extract_text(Path(img_path))
